@@ -1,11 +1,10 @@
+import { MemoryGame } from "./pages/MemoryGame";
 
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-500 flex justify-center py-10">
-      <div className=" border-8 border-red-600 w-10/12">
-        
-      </div>
+    <div className="min-h-screen bg-[#2AAA85] flex justify-center py-10">
+        <MemoryGame/>
     </div>
   );
 }

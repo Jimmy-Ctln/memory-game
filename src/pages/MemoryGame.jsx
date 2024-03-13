@@ -7,7 +7,6 @@ import dark from "../assets/dark.png";
 
 export const MemoryGame = () => {
   const imageRefs = useRef([]);
-  console.log(imageRefs)
   
   const images = [
     {
@@ -29,13 +28,15 @@ export const MemoryGame = () => {
   ];
 
 
-  function returnCard(index, image) {
+  const returnCard = (index, image, source) => {
     
-    if (imageRefs.current[index]) {
-        imageRefs.current[index].src = image
-        console.log(imageRefs)
+    if (source === 'top' && imageRefs.current[index + 'top']) {
+      imageRefs.current[index + 'top'].src = image
     }
-  }
+    else if (source === 'bottom' && imageRefs.current[index + 'bottom']) {
+      imageRefs.current[index + 'bottom'].src = image
+    }
+  };
 
   return (
     <div className="border-4 min-screen w-10/12">
@@ -48,9 +49,9 @@ export const MemoryGame = () => {
           {images.map((image, index) => (
             <img
               key={index}
-              ref={(el) => (imageRefs.current[index] = el)}
+              ref={(el) => (imageRefs.current[index + 'top'] = el)}
               src={image.backCard}
-              onClick={() => returnCard(index, image.image)}
+              onClick={() => returnCard(index, image.image, 'top')}
               className="w-40 h-full max-w-[300px] object-cover cursor-pointer"
               alt=""
             />
@@ -60,8 +61,8 @@ export const MemoryGame = () => {
           {images.map((image, index) => (
             <img
               key={index}
-              ref={(el) => (imageRefs.current[index] = el)}
-              onClick={() => returnCard(index, image.image)}
+              ref={(el) => (imageRefs.current[index + 'bottom'] = el)}
+              onClick={() => returnCard(index, image.image, 'bottom')}
               className="w-40 h-full max-w-[300px] object-cover cursor-pointer"
               src={image.backCard}
               alt=""

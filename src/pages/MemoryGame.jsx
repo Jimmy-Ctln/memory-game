@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import panda from "../assets/panda.png";
 import pig from "../assets/pig.png";
 import hippo from "../assets/hippo.png";
@@ -6,40 +6,56 @@ import snake from "../assets/snake.png";
 import dark from "../assets/dark.png";
 
 export const MemoryGame = () => {
-  const imageRefs = useRef([]);
+  const imageRef = useRef([]);
   
   const images = [
     {
+      id: 'panda',
       backCard: dark,
       image: panda,
     },
     {
+      id: 'pig',
       backCard: dark,
       image: pig,
     },
     {
+      id: 'hippo',
       backCard: dark,
       image: hippo,
     },
     {
+      id: 'snake',
       backCard: dark,
       image: snake,
     },
   ];
 
 
-  const returnCard = (index, image, source) => {
+  
+  const displayCard = (image, prefix) => {
+    imageRef.current.push(image);
+    console.log(imageRef.current);
+    const cardRef = imageRef.current[prefix + image.id]
+    if(cardRef) {
+      cardRef.src = image.image
+    }
     
-    if (source === 'top' && imageRefs.current[index + 'top']) {
-      imageRefs.current[index + 'top'].src = image
+    if (imageRef.current.length >= 2) {
+        const firstImage = imageRef.current[0];
+        const secondImage = imageRef.current[1];
+        
+        if (firstImage.id === secondImage.id) {
+            console.log('PAIRE !');
+        } else {
+            console.log('Aucune paire..');
+
+        }
     }
-    else if (source === 'bottom' && imageRefs.current[index + 'bottom']) {
-      imageRefs.current[index + 'bottom'].src = image
-    }
-  };
+};
 
   return (
-    <div className="border-4 min-screen w-10/12">
+    <div className="min-screen w-10/12">
       <div className="text-center text-white flex flex-col gap-5">
         <h1 className="text-5xl">Memory Game 🃏</h1>
         <h2 className="text-4xl">Try to win !</h2>
@@ -49,9 +65,9 @@ export const MemoryGame = () => {
           {images.map((image, index) => (
             <img
               key={index}
-              ref={(el) => (imageRefs.current[index + 'top'] = el)}
+              ref={(el) => (imageRef.current['top_' + image.id] = el)}
               src={image.backCard}
-              onClick={() => returnCard(index, image.image, 'top')}
+              onClick={() => displayCard(image, 'top_')}
               className="w-40 h-full max-w-[300px] object-cover cursor-pointer"
               alt=""
             />
@@ -61,8 +77,8 @@ export const MemoryGame = () => {
           {images.map((image, index) => (
             <img
               key={index}
-              ref={(el) => (imageRefs.current[index + 'bottom'] = el)}
-              onClick={() => returnCard(index, image.image, 'bottom')}
+              ref={(el) => (imageRef.current['bottom_' + image.id] = el)}
+              onClick={() => displayCard(image, 'bottom_')}
               className="w-40 h-full max-w-[300px] object-cover cursor-pointer"
               src={image.backCard}
               alt=""

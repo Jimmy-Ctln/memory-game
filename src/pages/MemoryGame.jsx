@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef} from "react";
 import panda from "../assets/panda.png";
 import pig from "../assets/pig.png";
 import hippo from "../assets/hippo.png";
@@ -7,6 +7,10 @@ import dark from "../assets/dark.png";
 
 export const MemoryGame = () => {
   const imageRef = useRef([]);
+  const [showMessage, setShowMessage] = useState(false)
+  const [message, setMessage] = useState('')
+
+  const ValidPairs = []
   
   const images = [
     {
@@ -31,11 +35,17 @@ export const MemoryGame = () => {
     },
   ];
 
+  function popUp(message) {
+    setMessage(message)
+    setShowMessage(true)
+    setTimeout(() => {
+      setShowMessage(false)
+      setMessage('')
+    }, 2000)
+  } 
 
-  
   const displayCard = (image, prefix) => {
     imageRef.current.push(image);
-    console.log(imageRef.current);
     const cardRef = imageRef.current[prefix + image.id]
     if(cardRef) {
       cardRef.src = image.image
@@ -46,13 +56,14 @@ export const MemoryGame = () => {
         const secondImage = imageRef.current[1];
         
         if (firstImage.id === secondImage.id) {
-            console.log('PAIRE !');
+          popUp('Bravo !')
         } else {
-            console.log('Aucune paire..');
-
+          popUp('Oups..')
         }
     }
 };
+
+ 
 
   return (
     <div className="min-screen w-10/12">
@@ -60,7 +71,10 @@ export const MemoryGame = () => {
         <h1 className="text-5xl">Memory Game 🃏</h1>
         <h2 className="text-4xl">Try to win !</h2>
       </div>
-      <div className="flex flex-col gap-10 mt-10">
+      <div className={` text-white text-3xl text-center mt-10 display${showMessage ? ' block' : ' none'}`} style={{ height: '50px' }}>
+        {showMessage && <p>{message}</p>}
+      </div>
+      <div className="flex flex-col gap-10 mt-8">
         <div className="flex items-center justify-center gap-8 mt-10">
           {images.map((image, index) => (
             <img

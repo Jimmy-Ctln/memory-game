@@ -3,67 +3,63 @@ import panda from "../assets/panda.png";
 import pig from "../assets/pig.png";
 import hippo from "../assets/hippo.png";
 import snake from "../assets/snake.png";
-import dark from "../assets/dark.png";
+import backCard from "../assets/dark.png";
+import { replicateArray } from "../utils/array";
 
 export const MemoryGame = () => {
-  const imageRef = useRef([]);
-  const [showMessage, setShowMessage] = useState(false)
-  const [message, setMessage] = useState('')
-
-  const ValidPairs = []
   
-  const images = [
+  const availableCards = [
     {
       id: 'panda',
-      backCard: dark,
       image: panda,
     },
     {
       id: 'pig',
-      backCard: dark,
       image: pig,
     },
     {
       id: 'hippo',
-      backCard: dark,
       image: hippo,
     },
     {
       id: 'snake',
-      backCard: dark,
       image: snake,
     },
   ];
 
-  function popUp(message) {
-    setMessage(message)
-    setShowMessage(true)
-    setTimeout(() => {
-      setShowMessage(false)
-      setMessage('')
-    }, 2000)
-  } 
 
-  const displayCard = (image, prefix) => {
-    imageRef.current.push(image);
-    const cardRef = imageRef.current[prefix + image.id]
-    if(cardRef) {
-      cardRef.src = image.image
-    }
+  const [gameCards, setGameCards] = useState(replicateArray(availableCards, 2).map((card) => {
     
-    if (imageRef.current.length >= 2) {
-        const firstImage = imageRef.current[0];
-        const secondImage = imageRef.current[1];
-        
-        if (firstImage.id === secondImage.id) {
-          popUp('Bravo !')
-        } else {
-          popUp('Oups..')
-        }
+    const gameCard = {
+      
+      flipped: false,
+      card: card
     }
-};
+    return gameCard
+  }))
 
- 
+  console.log(gameCards)
+  
+  const [showMessage, setShowMessage] = useState(false)
+  const [message, setMessage] = useState('')
+
+  
+  function flipCard(gamecard) {
+    gamecard.flipped = !gamecard.flipped
+    setGameCards([...gameCards])
+  }
+
+
+  // function popUp(message) {
+  //   setMessage(message)
+  //   setShowMessage(true)
+  //   setTimeout(() => {
+  //     setShowMessage(false)
+  //     setMessage('')
+  //   }, 2000)
+  // } 
+
+  
 
   return (
     <div className="min-screen w-10/12">
@@ -76,25 +72,12 @@ export const MemoryGame = () => {
       </div>
       <div className="flex flex-col gap-10 mt-8">
         <div className="flex items-center justify-center gap-8 mt-10">
-          {images.map((image, index) => (
+          {gameCards.map((gamecard, index) => (
             <img
               key={index}
-              ref={(el) => (imageRef.current['top_' + image.id] = el)}
-              src={image.backCard}
-              onClick={() => displayCard(image, 'top_')}
+              src={gamecard.flipped ? gamecard.card.image : backCard }
+              onClick={() => flipCard(gamecard)}
               className="w-40 h-full max-w-[300px] object-cover cursor-pointer"
-              alt=""
-            />
-          ))}
-        </div>
-        <div className="flex items-center justify-center gap-8">
-          {images.map((image, index) => (
-            <img
-              key={index}
-              ref={(el) => (imageRef.current['bottom_' + image.id] = el)}
-              onClick={() => displayCard(image, 'bottom_')}
-              className="w-40 h-full max-w-[300px] object-cover cursor-pointer"
-              src={image.backCard}
               alt=""
             />
           ))}
